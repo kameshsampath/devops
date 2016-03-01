@@ -1,0 +1,27 @@
+---
+
+- name: "Disable and Stop EAP"
+  service:
+    name: jboss-as-standalone
+    enabled: no
+    state: stopped
+  tags: [eap-rollback]
+
+- name: "Remove EAP Service script "
+  shell: "rm /etc/init.d/jboss-as-standalone && rm /etc/init.d/jboss-as-domain"
+  when: eap_stopped
+  tags: [eap-rollback]
+
+- name: "Delete EAP Service Config"
+  file:
+    path: "/etc/jboss-as"
+    state: absent
+  tags: [eap-rollback]
+
+- name: "Delete EAP Install Directories"
+  file:
+    path: "{{eap_install_path}}"
+    state: absent  
+  notify: 
+    - unlisten for eap
+  tags: [eap-rollback]

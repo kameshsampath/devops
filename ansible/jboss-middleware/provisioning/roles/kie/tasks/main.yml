@@ -1,0 +1,35 @@
+---
+
+- name: "Sync bin"
+  synchronize:
+    src: "{{kie_deployable}}/bin"
+    dest: "{{eap_install_path}}/bin"
+  become_user: "{{eap_service_user}}" 
+  ignore_errors: true
+  tags: [kie]
+
+- name: "Sync standalone configuration"
+  synchronize:
+    src: "{{kie_deployable}}/standalone/configuration"
+    dest: "{{eap_install_path}}/standalone/configuration"
+  become_user: "{{eap_service_user}}"
+  ignore_errors: true
+  tags: [kie]
+
+- name: "Sync domain configuration"
+  synchronize:
+    src: "{{kie_deployable}}/domain/configuration"
+    dest: "{{eap_install_path}}/domain/configuration"
+  become_user: "{{eap_service_user}}" 
+  ignore_errors: true
+  tags: [kie]
+
+- name: "Deploy Kie Engine"
+  synchronize:
+    src: "{{kie_deployable}}/standalone/deployments"
+    dest: "{{eap_install_path}}/standalone/deployments"  
+    rsync_opts:
+      - "--exclude='business*.*'"
+  become_user: "{{eap_service_user}}"
+  ignore_errors: true
+  tags: [kie]

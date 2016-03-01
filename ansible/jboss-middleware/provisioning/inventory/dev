@@ -1,0 +1,21 @@
+ansible-master.example.com ansible_connection=local
+
+[eap]
+node1.example.com ansible_ssh_host=192.168.56.101
+node2.example.com ansible_ssh_host=192.168.56.102
+node3.example.com ansible_ssh_host=192.168.56.103
+
+[brms]
+node2.example.com ansible_ssh_host=192.168.56.102
+
+[kie]
+node3.example.com ansible_ssh_host=192.168.56.103
+
+[jon-server]
+ansible-master.example.com ansible_connection=local
+
+[jon-nodes]
+node1.example.com ansible_ssh_host=192.168.56.101
+node2.example.com ansible_ssh_host=192.168.56.102
+node3.example.com ansible_ssh_host=192.168.56.103
+

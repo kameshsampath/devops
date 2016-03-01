@@ -1,0 +1,9 @@
+---
+ - hosts: brms
+   remote_user: vagrant
+   sudo: yes
+   connection: fireball
+   roles:
+     - common
+     - eap
+     - brms

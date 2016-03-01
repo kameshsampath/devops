@@ -1,0 +1,88 @@
+{
+  "push": {
+    "name": "centos7x",
+    "base_dir": "../",
+    "include": [
+      "http/**",
+      "scripts/**"
+    ],
+    "exclude": [
+      "isos",
+      "vars"
+    ],
+    "vcs": true
+  },
+  "variables": {
+    "buildtype": "centos7",
+    "guest_os_type": "RedHat_64",
+    "iso_url": "https://mirrors.kernel.org/centos/7/isos/x86_64/CentOS-7-x86_64-DVD-1511.iso",
+    "iso_sha256_checksum": "907e5755f824c5848b9c8efbb484f3cd945e93faa024bad6ba875226f9683b16",
+    "ssh_username": "vagrant",
+    "ssh_user_password": "vagrant",
+    "atlas_username": "{{env `ATLAS_USER_NAME`}}",
+    "atlas_name": "{{env `ATLAS_NAME`}}"
+  },
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/addins.sh",
+        "scripts/virtualbox.sh",
+        "scripts/cleanup.sh"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "echo 'vagrant'|sudo -S bash '{{.Path}}'"
+        }
+      }
+    }
+  ],
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "guest_os_type": "{{user `guest_os_type`}}",
+      "headless": true,
+      "boot_wait": "10s",
+      "disk_size": 20480,
+      "http_directory": "http",
+      "iso_checksum": "{{user `iso_sha256_checksum`}}",
+      "iso_checksum_type": "sha256",
+      "iso_url": "{{user `iso_url`}}",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_user_password`}}",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "boot_command": [
+        "I<tab><wait>",
+        "vmlinuz noapic ",
+        "initrd=initrd.img ",
+        "ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rhel7.ks<enter>"
+      ]
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "vagrant",
+        "keep_input_artifact": false,
+        "output": "boxes/{{.Provider}}/{{user `buildtype`}}_{{.BuildName}}_{{.Provider}}_{{isotime \"2006-01-02\"}}.box"
+      },
+      {
+        "type": "atlas",
+        "only": [
+          "virtualbox-iso"
+        ],
+        "artifact": "{{user `atlas_username`}}/{{user `atlas_name`}}",
+        "artifact_type": "vagrant.box",
+        "metadata": {
+          "provider": "virtualbox",
+          "version": "1.0.0",
+          "created_at": "{{timestamp}}"
+        }
+      }
+    ]
+  ]
+}

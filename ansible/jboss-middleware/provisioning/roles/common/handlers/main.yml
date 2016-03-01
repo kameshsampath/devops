@@ -1,0 +1,32 @@
+---
+
+- name: reload eap service unit
+  shell: systemctl daemon-reload
+  notify:
+    - restart eap
+
+- name: restart eap
+  service: 
+    name: jboss-eap.service
+    state: restarted
+  notify:
+    - listen for eap
+
+- name: stop eap
+  service: 
+    name: jboss-eap.service
+    state: stopped
+  notify:
+    - unlisten for eap
+
+- name: listen for eap
+  wait_for: port="{{ eap_http_port }}" host="{{ ansible_ssh_host | default(inventory_hostname) }}" timeout=30
+  notify:
+    - check eap is available
+
+- name: unlisten for eap
+  wait_for: port="{{ eap_http_port }}" host="{{ ansible_ssh_host | default(inventory_hostname) }}" timeout=30 state=stopped
+
+- name: check eap is available
+  uri:
+    url: "http://{{ip}}:{{eap_http_port}}"

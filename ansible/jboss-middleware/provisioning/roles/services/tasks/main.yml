@@ -1,0 +1,45 @@
+- name: "Create EAP systemd service"
+  template: 
+    src: "eap-systemd.j2"
+    dest: "/etc/systemd/system/jboss-eap.service"
+  notify:
+    - reload eap service unit
+  when: jboss_home
+  tags: [eap]
+
+- name: "Enable EAP Service"
+  service: 
+    name: jboss-eap.service
+    enabled: yes
+  when: jboss_home
+  tags: [eap]
+
+- name: "Copy EAP service init.d scripts"
+  template: 
+    src: "jboss-as-{{jboss_config}}.sh.j2"
+    dest: "/etc/init.d/jboss-as-{{jboss_config}}"
+    mode: 0755
+  notify:
+    - reload eap service unit
+  when: jboss_home
+  tags: [eap]
+
+- name: "EAP System Service Configuration Directory"
+  file: 
+    path: /etc/jboss-as
+    state: directory
+    owner: "{{eap_service_user}}"
+    group: "{{eap_service_user}}"
+  when: jboss_home
+  tags: [eap]
+
+- name: "Copy EAP Service Configuration"
+  template:
+    src: jboss-as.conf.j2
+    dest: /etc/jboss-as/jboss-as.conf
+    owner: "{{eap_service_user}}"
+    group: "{{eap_service_user}}"
+  notify:
+    - reload eap service unit
+  when: jboss_home
+  tags: [eap]

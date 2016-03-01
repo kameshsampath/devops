@@ -1,0 +1,44 @@
+---
+
+- set_fact:
+    eap_install_script: "/tmp/{{product_name}}-{{product_version}}-install.xml"
+
+- name: "Create JBoss User"
+  user: 
+    name: jboss
+    shell: /sbin/nologin
+    state: present
+  tags: [eap]
+
+- name: "Create Install Script"
+  template:
+    src: "installscript.xml.j2"
+    dest: "{{eap_install_script}}"
+  register: result
+  tags: [eap]
+
+- name: "Setup EAP"
+  command: "java -jar {{software_repo}}/jboss-eap-6.4.0-installer.jar {{eap_install_script}}"
+  args:
+    creates: "{{eap_install_path}}"
+  when: result
+  register: installed
+  tags: [eap]
+
+- stat: 
+    path: "{{eap_install_path}}"
+  register: jboss_home
+  when: installed
+  tags: [eap]
+
+- name: "Change Ownership of EAP home"
+  file:
+    path: "{{eap_install_path}}"
+    owner: "{{eap_service_user}}"
+    group: "{{eap_service_user}}"    
+    recurse: yes
+    state: directory
+  when: jboss_home
+  tags: [eap]
+
+

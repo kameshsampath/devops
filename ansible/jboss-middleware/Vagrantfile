@@ -1,0 +1,72 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+ 
+ config.vm.provision "shell", path: "scripts/bootstrap.sh"
+
+ # Ansible Control Machine
+ config.vm.define "ansible-master"  do|node|
+    
+    node.vm.box         = "kameshsampath/centos7x"
+    node.vm.host_name   = "ansible-master.example.com"
+    
+    node.vm.network "private_network", ip: "192.168.56.100"
+
+    node.vm.provision "shell", path: "scripts/bootstrap_control_machine.sh"
+
+
+    # Default Vagrant Home directory 
+    node.vm.synced_folder ".","/vagrant", type: "rsync",
+     rsync__exclude: ".git/", rsync__auto: true
+
+    # Software Repo folder
+    node.vm.synced_folder "~/Downloads/redhat/Middleware", 
+     "/vagrant/middleware/", type: "rsync", create: true, rsync__auto: true
+
+    node.vm.provider :virtualbox do |vb, override|
+         vb.name = "AnsibleControlMaster"
+         vb.customize ["modifyvm", :id, "--memory", "1024"]
+         vb.customize ["modifyvm", :id, "--cpus", "1"]
+    end
+
+ end
+
+ (1..3).each do | i |
+    config.vm.define "node#{i}" do |node|
+      node.vm.box         = "kameshsampath/centos7x"
+      node.vm.hostname    = "node#{i}.example.com"      
+      node.vm.network "private_network", ip: "192.168.56.10#{i}"
+          
+      node.vm.synced_folder ".","/vagrant", disabled: true
+      
+      # Software Repo folder
+      node.vm.synced_folder "~/Downloads/redhat/Middleware", 
+      "/vagrant/middleware/", type: "rsync", create: true, rsync__auto: true
+
+      node.vm.provider :virtualbox do |vb, override|
+        vb.name = "Ansible_Node#{i}"
+        vb.customize ["modifyvm", :id, "--memory", "2048"]
+        vb.customize ["modifyvm", :id, "--cpus", "1"]
+      end
+
+      node.vm.provision "shell", path: "scripts/bootstrap_node.sh"
+    end
+  end
+
+  #Vagrant Cachier
+  if Vagrant.has_plugin?("vagrant-cachier")
+    # http://fgrehm.viewdocs.io/vagrant-cachier/usage/
+    # config.cache.scope="box"
+    config.cache.scope = :machine
+    config.cache.enable :yum
+  end
+
+  #Vagrant vb-guest
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = true
+    config.cache.enable :yum
+    config.vbguest.no_remote = true
+  end
+
+end

@@ -1,0 +1,34 @@
+--- 
+ # Make SELinux permissible
+ - selinux: policy=targeted state=permissive
+
+ - name: Check if Service Exists
+   stat: path=/proc/sys/firewalld
+   register: service_status
+
+ - name: "Stop firewall"
+   shell: systemctl stop firewalld
+   when: service_status.stat.exists
+
+ - name: "Disable firewall"
+   shell: systemctl disable firewalld
+   when: service_status.stat.exists
+
+ # Add host name entries for convinence
+ - name: "Add host name entires"
+   template:
+     src: hosts.j2
+     dest: /etc/hosts
+     backup: yes
+   tags: [hosts]
+
+# Edit ssh config to add ControlPersist for better SSH performance
+ - name: "Configure SSH Settings"
+   copy:
+    src: "ssh.config"
+    dest: "{{remote_user}}/.ssh/config"
+    owner: "{{remote_user}}"
+    group: "{{remote_user}}"
+    mode: 0700
+   tags: [ssh]
+

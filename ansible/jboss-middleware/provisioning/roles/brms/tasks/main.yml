@@ -1,0 +1,48 @@
+---
+
+- name: "Fetch BRMS Deployable"
+  unarchive:
+    copy: no
+    creates: "{{brms_deployable}}"
+    owner: "{{eap_service_user}}"
+    group: "{{eap_service_user}}"
+    src: "{{software_repo}}/jboss-brms-6.2.0.GA-deployable-eap6.x.zip"
+    dest: "/tmp"
+  notify:
+    - stop eap
+  tags: [brms]
+
+- name: "Sync EAP bin"
+  synchronize:
+   src:  "{{brms_deployable}}/bin/"
+   dest: "{{eap_install_path}}/bin"
+  ignore_errors: true
+  tags: [brms]
+
+- name: "Sync standalone configuration"
+  synchronize: 
+    src: "{{brms_deployable}}/standalone/configuration/"
+    dest: "{{eap_install_path}}/standalone/configuration"
+  ignore_errors: true
+  tags: [brms]
+
+- name: "Sync domain configuration"
+  synchronize: 
+    src: "{{brms_deployable}}/domain/configuration/"
+    dest: "{{eap_install_path}}/domain/configuration"
+  ignore_errors: true
+  tags: [brms]
+
+- name: "Deploy Business Central"
+  jboss:
+    deploy_path: "{{eap_install_path}}/standalone/deployments"
+    deployment: "business-central.war"
+    src: "{{brms_deployable}}/standalone/deployments/business-central.war"
+  become_user: "{{eap_service_user}}"
+  tags: [brms]
+
+- name: "Create BRMS Users"
+  shell: "{{eap_install_path}}/bin/add-user.sh -a -u {{item.key}} -p {{item.value.password}} -g {{item.value.roles}}"
+  with_dict: "{{users}}"
+  become_user: "{{eap_service_user}}"
+  tags: [brms]

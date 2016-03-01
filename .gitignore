@@ -1,0 +1,9 @@
+**/isos/**
+**/keys/**
+**/.vagrant
+**/boxes
+isos
+packer/vars
+*.sublime-project
+*.sublime-workspace
+ansible.cfg

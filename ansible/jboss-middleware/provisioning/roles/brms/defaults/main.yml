@@ -1,0 +1,9 @@
+---
+users:
+  brmsAdmin:
+    password: redh@t123
+    roles: "admin"
+  guest:
+    password: guest@123
+    roles: "guest"
+      

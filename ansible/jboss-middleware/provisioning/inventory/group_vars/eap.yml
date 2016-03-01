@@ -1,0 +1,13 @@
+---
+
+product_name: eap
+product_version: 6.4.0
+eap_installer_file: jboss-eap-6.4.0-installer.jar
+eap_install_path: "/var/lib/{{product_name}}-{{product_version}}"
+eap_service_user: jboss
+jboss_config: standalone
+eap_admin_user: admin
+eap_admin_user_password: "redh@t123"
+http_bind_address: "{{ip}}"
+port_offset: 0
+eap_http_port: "{{8080 + port_offset * 100 }}"

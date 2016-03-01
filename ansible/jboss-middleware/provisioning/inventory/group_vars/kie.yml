@@ -1,0 +1,2 @@
+---
+kie_deployable: "{{software_repo}}jboss-brms-6.2.0.GA-deployable-eap6.x"
