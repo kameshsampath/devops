@@ -1,0 +1,4 @@
+fuse_install_archive: "{{software_repo}}jboss-fuse-full-6.2.1.redhat-084.zip"
+fuse_install_path: /var/lib
+fuse_service_user: fuse
+fuse_home: "{{fuse_install_path}}/jboss-fuse-6.2.1.redhat-084"

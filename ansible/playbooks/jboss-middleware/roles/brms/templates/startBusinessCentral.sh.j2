@@ -1,2 +1,4 @@
 #!/bin/bash
-sudo -u jboss {{eap_install_path}}/bin/standalone.sh -b {{ip}} -Djboss.socker.binding.port-offset={{ port_offset * 100 }}
+export JAVA_HOME="/usr"
+export M2_HOME="/usr/local/bin"
+sudo -E -u {{eap_service_user}} {{eap_install_path}}/bin/standalone.sh -b {{ip}} -Djboss.socker.binding.port-offset={{ port_offset * 100 }}

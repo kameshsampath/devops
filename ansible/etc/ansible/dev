@@ -3,15 +3,18 @@ node1  ansible_host=192.168.56.101
 node2  ansible_host=192.168.56.102
 node3  ansible_host=192.168.56.103
 
+[brms]
+node2
+
 [eap]
 node2
 node3
 
-[brms]
-node2
-
 [kie]
 node3
+
+[fuse]
+node1
 
 [jon-server]
 node1

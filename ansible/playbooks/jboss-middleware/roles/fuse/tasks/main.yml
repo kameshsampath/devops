@@ -1,0 +1,33 @@
+- name: "Create Fuse User"
+  user: 
+    name: fuse
+    shell: /sbin/nologin
+    state: present
+  tags: [fuse]
+
+- name: "Unzip Fuse"
+  unarchive:
+    copy: no
+    src: "{{fuse_install_archive}}"
+    dest: "{{fuse_install_path}}"
+    owner: "{{fuse_service_user}}"
+    group: "{{fuse_service_user}}"
+    creates: "{{fuse_home}}"
+  tags: [fuse]
+
+- name: add/update users to fuse realm
+  lineinfile: 
+    dest: "{{fuse_home}}/etc/users.properties"
+    regexp: "^{{ item.username}}=(.*)$"
+    line: "{{ item.username ~ '=' ~ item.password ~ ',' ~ item.roles|join(',')}}"
+    insertbefore: EOF
+  with_items: "{{users}}"
+
+- name: "Fuse Run Utility"
+  template:
+    src: "startFuse.sh.j2"
+    dest: "/home/{{ansible_user}}/startFuse.sh"
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: 0755
+  tags: [fuse]

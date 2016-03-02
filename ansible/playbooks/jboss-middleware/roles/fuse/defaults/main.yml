@@ -1,0 +1,21 @@
+--- 
+users: 
+  - 
+    password: redh@t123
+    roles: 
+      - admin
+      - manager
+      - viewer
+      - Monitor
+      - Operator
+      - Maintainer
+      - Deployer
+      - Auditor
+      - Administrator
+      - SuperUser
+    username: fuseadmin
+  - 
+    password: guest
+    roles: 
+      - viewer
+    username: guest
