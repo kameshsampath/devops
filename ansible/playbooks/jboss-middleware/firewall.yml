@@ -2,6 +2,5 @@
  - hosts: 
       - eap
    become: yes
-   connection: paramiko
    roles:
      - firewall

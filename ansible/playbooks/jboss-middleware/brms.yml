@@ -1,7 +1,6 @@
 ---
  - hosts: brms
    become: yes
-   connection: paramiko
    roles:
      - common
      - eap

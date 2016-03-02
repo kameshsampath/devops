@@ -1,7 +1,7 @@
 master ansible_host=localhost ansible_connection=local
-node1  ansible_host=192.168.56.101 ansible_ssh_pass=vagrant
-node2  ansible_host=192.168.56.102 ansible_ssh_pass=vagrant
-node3  ansible_host=192.168.56.103 ansible_ssh_pass=vagrant
+node1  ansible_host=192.168.56.101
+node2  ansible_host=192.168.56.102
+node3  ansible_host=192.168.56.103
 
 [eap]
 node2

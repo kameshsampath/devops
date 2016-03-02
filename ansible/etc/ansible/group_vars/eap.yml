@@ -3,7 +3,7 @@
 product_name: eap
 product_version: 6.4.0
 eap_installer_file: jboss-eap-6.4.0-installer.jar
-eap_install_path: "/var/lib/{{product_name}}-{{product_version}}"
+eap_install_path: "/var/lib/jboss-{{product_name}}-{{product_version}}"
 eap_service_user: jboss
 jboss_config: standalone
 eap_admin_user: admin
