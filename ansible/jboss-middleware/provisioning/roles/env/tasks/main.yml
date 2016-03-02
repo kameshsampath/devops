@@ -1,6 +1,5 @@
 ---
-
 - name: "Deploy SSH Keys"
   authorized_key:
     user: "vagrant"
-    key: "{{ lookup('file','/home/vagrant/.ssh/id_rsa'}}"
+    key: "{{lookup('file','/home/vagrant/.ssh/ansible_id_rsa.pub')}}"

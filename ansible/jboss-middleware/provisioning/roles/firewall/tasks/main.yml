@@ -1,4 +1,5 @@
 --- 
+ ## TODO Define more reboust firewall rules
  # Make SELinux permissible
  - selinux: policy=targeted state=permissive
 
@@ -21,14 +22,3 @@
      dest: /etc/hosts
      backup: yes
    tags: [hosts]
-
-# Edit ssh config to add ControlPersist for better SSH performance
- - name: "Configure SSH Settings"
-   copy:
-    src: "ssh.config"
-    dest: "{{remote_user}}/.ssh/config"
-    owner: "{{remote_user}}"
-    group: "{{remote_user}}"
-    mode: 0700
-   tags: [ssh]
-

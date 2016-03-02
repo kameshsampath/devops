@@ -6,7 +6,7 @@ Vagrant.configure(2) do |config|
  config.vm.provision "shell", path: "scripts/bootstrap.sh"
 
  # Ansible Control Machine
- config.vm.define "ansible-master"  do|node|
+ config.vm.define "ansible-master", primary: true do|node|
     
     node.vm.box         = "kameshsampath/centos7x"
     node.vm.host_name   = "ansible-master.example.com"
