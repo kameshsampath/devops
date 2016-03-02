@@ -1,0 +1,14 @@
+---
+
+- name: "modify vagrant user"
+  user:
+    name: "{{ansible_user}}"
+    generate_ssh_key: yes
+    ssh_key_file: .ssh/ansible_id_rsa
+  when: inventory_hostname == "master"
+
+- name: "Deploy SSH Keys to nodes"
+  authorized_key:
+    user: "{{ansible_user}}"
+    key: "{{lookup('file','/home/{{ansible_user}}/.ssh/ansible_id_rsa.pub')}}"
+  when: control_master is not defined

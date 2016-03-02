@@ -1,0 +1,6 @@
+---
+ - hosts: kie
+   become: yes
+   connection: paramiko
+   roles:
+     - kie

@@ -4,3 +4,4 @@ alias: node2
 hostname: node2.example.com
 ip: 192.168.56.102
 ansible_host: 192.168.56.102
+ansible_user: vagrant

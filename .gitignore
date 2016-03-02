@@ -6,4 +6,5 @@ isos
 packer/vars
 *.sublime-project
 *.sublime-workspace
-ansible.cfg
+**/ansible_vault_pass_file
+**/*_id_rsa

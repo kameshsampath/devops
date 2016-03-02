@@ -3,3 +3,5 @@ alias: master
 hostname: ansible-master.example.com
 ip: 192.168.56.100
 ansible_host: 192.168.56.100
+control_master: true
+ansible_user: vagrant

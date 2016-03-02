@@ -1,6 +1,0 @@
----
- - hosts: kie
-   remote_user: vagrant
-   sudo: yes
-   roles:
-     - kie

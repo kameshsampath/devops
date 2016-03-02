@@ -1,6 +1,5 @@
 ---
  - hosts: eap
-   remote_user: vagrant
-   sudo: yes
+   become: yes
    roles:
      - java

@@ -1,8 +1,7 @@
 ---
  - hosts: brms
-   remote_user: vagrant
-   sudo: yes
-   connection: fireball
+   become: yes
+   connection: paramiko
    roles:
      - common
      - eap
