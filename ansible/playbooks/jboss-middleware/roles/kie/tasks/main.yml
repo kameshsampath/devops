@@ -1,35 +1,66 @@
 ---
 
-- name: "Sync bin"
-  synchronize:
-    src: "{{kie_deployable}}/bin"
-    dest: "{{eap_install_path}}/bin"
-  become_user: "{{eap_service_user}}" 
-  ignore_errors: true
+- unarchive:
+    copy: no
+    src: "{{software_repo}}/jboss-brms-6.2.0.GA-deployable-eap6.x.zip"
+    dest: "/tmp"
+    owner: "{{eap_service_user}}"
+    group: "{{eap_service_user}}"
+    creates: "{{eap_install_path}}/standalone/deployments/kie-server.war"
+  notify:
+    - sync kie bin
   tags: [kie]
 
-- name: "Sync standalone configuration"
+- set_fact:
+    kie_host_ip: "{{hostvars[inventory_hostname]['ip']}}"
+
+- name: sync kie bin
   synchronize:
-    src: "{{kie_deployable}}/standalone/configuration"
-    dest: "{{eap_install_path}}/standalone/configuration"
-  become_user: "{{eap_service_user}}"
-  ignore_errors: true
+    src: "/tmp/{{kie_deployable}}/bin/"
+    dest: "{{eap_install_path}}/bin/"
+  notify:
+    - sync kie domain config
+  delegate_to: "{{kie_host_ip}}"
   tags: [kie]
 
-- name: "Sync domain configuration"
+- name: sync kie domain config
   synchronize:
-    src: "{{kie_deployable}}/domain/configuration"
-    dest: "{{eap_install_path}}/domain/configuration"
-  become_user: "{{eap_service_user}}" 
-  ignore_errors: true
+    src: "/tmp/{{kie_deployable}}/domain/configuration/"
+    dest: "{{eap_install_path}}/domain/configuration/"
+  notify:
+    - sync kie standalone config
+  delegate_to: "{{kie_host_ip}}"
   tags: [kie]
 
-- name: "Deploy Kie Engine"
+- name: sync kie standalone config
   synchronize:
-    src: "{{kie_deployable}}/standalone/deployments"
-    dest: "{{eap_install_path}}/standalone/deployments"  
+    src: "/tmp/{{kie_deployable}}/standalone/configuration/"
+    dest: "{{eap_install_path}}/standalone/configuration/"
+  notify:
+    - deploy business-central and kie
+  delegate_to: "{{kie_host_ip}}"
+  tags: [kie]
+
+- name: deploy kie engine
+  synchronize:
+    src: "/tmp/{{kie_deployable}}/standalone/deployments/"
+    dest: "{{eap_install_path}}/standalone/deployments/"
     rsync_opts:
-      - "--exclude='business*.*'"
-  become_user: "{{eap_service_user}}"
-  ignore_errors: true
+      - "--exclude='business*'"
+  delegate_to: "{{kie_host_ip}}"
+  tags: [kie]
+
+- name: "Create Kie Users"
+  shell: "{{eap_install_path}}/bin/add-user.sh -a -u {{item.key}} -p {{item.value.password}} -g {{item.value.roles}}"
+  with_dict: "{{users}}"
+  delegate_to: "{{kie_host_ip}}"
+  tags: [kie]
+
+- name: "Kie Run Utility"
+  template:
+    src: "startKieServer.sh.j2"
+    dest: "/home/{{ansible_user}}/startKieServer.sh"
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: 0755
   tags: [kie]

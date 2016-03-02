@@ -1,0 +1,7 @@
+---
+
+- name: install java
+  yum: 
+    name: "java-{{openjdk_version}}-openjdk-devel"
+    state: present
+  tags: [java]

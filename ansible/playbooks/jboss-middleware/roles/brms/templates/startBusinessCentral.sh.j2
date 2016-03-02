@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo -u jboss {{eap_install_path}}/bin/standalone.sh -b {{ip}} -Djboss.socker.binding.port-offset={{ port_offset * 100 }}

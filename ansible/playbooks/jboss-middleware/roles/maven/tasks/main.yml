@@ -1,0 +1,17 @@
+---
+
+- name: install maven
+  unarchive:
+    src: "{{maven_download_url}}"
+    copy: no
+    dest: "/opt"
+    creates: "/opt/apache-maven-{{maven_version}}"
+  tags: [maven]
+
+- name: maven bin 
+  file:
+    state: link
+    force: true
+    src: "/opt/apache-maven-{{maven_version}}/bin/mvn"
+    dest: "/usr/local/bin/mvn"
+  tags: [maven]

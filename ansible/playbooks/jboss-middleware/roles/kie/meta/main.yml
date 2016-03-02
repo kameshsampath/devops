@@ -1,0 +1,4 @@
+---
+# dependencies:
+#  - {role: "{{environment_dir}}/roles/java", openjdk_version: '1.7.0'}
+#  - {role: "{{environment_dir}}/roles/maven", maven_version: '3.3.9'}

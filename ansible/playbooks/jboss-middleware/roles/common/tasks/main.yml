@@ -1,7 +1,0 @@
---- 
-
-- name: "JDK7 Installed"
-  yum: 
-    name: java-1.7.0-openjdk-devel
-    state: present
-  tags: [java]

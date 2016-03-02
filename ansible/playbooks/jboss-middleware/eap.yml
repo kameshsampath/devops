@@ -1,6 +1,10 @@
 ---
  - hosts: eap
    become: yes
+   vars:
+     - environment_dir: /vagrant/environment/roles
    roles:
      - common
+     - java
+     - maven
      - eap

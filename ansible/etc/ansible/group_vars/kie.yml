@@ -1,2 +1,3 @@
 ---
-kie_deployable: "{{software_repo}}jboss-brms-6.2.0.GA-deployable-eap6.x"
+kie_deployable: "jboss-eap-6.4"
+kie_deployable_archive: "{{software_repo}}jboss-brms-6.2.0.GA-deployable-eap6.x.zip"

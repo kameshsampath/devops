@@ -1,6 +1,11 @@
 ---
  - hosts: kie
    become: yes
-   connection: paramiko
+   vars:
+     - environment_dir: /vagrant/environment/roles
    roles:
+     - common
+     - java
+     - maven
+     - eap
      - kie

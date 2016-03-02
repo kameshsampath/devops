@@ -1,0 +1,7 @@
+---
+kie_server_id: vagrant-kie-server
+kie_server_location: "http://{{hostvars[inventory_hostname]['ip']}}:{{eap_http_port}}/kie-server/services/rest/server"
+users:
+  kieserver:
+    password: redh@t123
+    roles: "kie-server"
