@@ -3,6 +3,7 @@
     name: fuse
     shell: /sbin/nologin
     state: present
+  when: create_service_user
   tags: [fuse]
 
 - name: "Unzip Fuse"
@@ -10,8 +11,8 @@
     copy: no
     src: "{{fuse_install_archive}}"
     dest: "{{fuse_install_path}}"
-    owner: "{{fuse_service_user}}"
-    group: "{{fuse_service_user}}"
+    owner: "{{create_service_user|ternary(fuse_service_user,omit)}}"
+    group: "{{create_service_user|ternary(fuse_service_user,omit)}}"
     creates: "{{fuse_home}}"
   tags: [fuse]
 
@@ -30,4 +31,5 @@
     owner: "{{ansible_user}}"
     group: "{{ansible_user}}"
     mode: 0755
+  when: create_service_user
   tags: [fuse]
