@@ -1,0 +1,30 @@
+- name: "Unzip Fuse"
+  unarchive:
+    copy: no
+    src: "{{fuse_install_archive}}"
+    dest: "{{fuse_install_path}}"
+    creates: "{{fuse_home}}"
+  tags: [fuse]
+
+- name: add/update users to fuse realm
+  lineinfile: 
+    dest: "{{fuse_home}}/etc/users.properties"
+    regexp: "^{{ item.username}}=(.*)$"
+    line: "{{ item.username ~ '=' ~ item.password ~ ',' ~ item.roles|join(',')}}"
+    insertbefore: EOF
+  with_items: "{{users}}"
+  tags: [fuse]
+
+- name: node name update
+  lineinfile: 
+    dest: "{{fuse_home}}/etc/system.properties"
+    regexp: "^karaf.name = root$"
+    line: "karaf.name = ${NODE_NAME}"
+  tags: [fuse]
+
+- name: karf start command update
+  lineinfile: 
+    backrefs: yes
+    dest: "{{fuse_home}}/bin/start"
+    regexp: '^(.*)exec "\$KARAF_HOME"/bin/karaf server "\$@" >> "\$KARAF_REDIRECT" 2>&1 &$'
+    line: '\1exec "$KARAF_HOME"/bin/karaf server "$@" '
