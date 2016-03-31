@@ -5,7 +5,7 @@
 
 - name: "Create JBoss User"
   user: 
-    name: jboss
+    name: "{{eap_service_user}}"  
     shell: /sbin/nologin
     state: present
   tags: [eap]
